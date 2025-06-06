@@ -33,13 +33,22 @@ class NewsViewModel @Inject constructor(
 ): ViewModel() {
 
     private val queryFlow = MutableStateFlow<String>("")
+    private val categoryFlowCache = mutableMapOf<SearchCategory, Flow<PagingData<NewsEntity>>>()
 
     val searchNewsFlow: Flow<PagingData<NewsEntity>> = queryFlow
         .debounce(300)
         .distinctUntilChanged()
         .flatMapLatest { query ->
             getNewsFlow(query = query)
-        }.cachedIn(viewModelScope)
+        }
+
+    fun getCategoryNewsFlow(
+        category: SearchCategory
+    ): Flow<PagingData<NewsEntity>> {
+        return categoryFlowCache.getOrPut(category) {
+            getNewsFlow(category = category, searchType = NewsSearchType.CATEGORIES)
+        }
+    }
 
     fun getNewsFlow(
         query: String = "",

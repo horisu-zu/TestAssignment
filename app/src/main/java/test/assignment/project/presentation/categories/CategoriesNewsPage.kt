@@ -21,7 +21,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import test.assignment.project.domain.model.SearchCategory
 import test.assignment.project.presentation.common.NewsPage
-import test.assignment.project.presentation.common.NewsSearchType
 import test.assignment.project.presentation.viewmodel.NewsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,9 +56,8 @@ fun CategoriesNewsPage(
             modifier = Modifier.fillMaxSize()
         ) { page ->
             val category = SearchCategory.entries[page]
-            val newsItems = newsViewModel.getNewsFlow(
-                category = category,
-                searchType = NewsSearchType.CATEGORIES
+            val newsItems = newsViewModel.getCategoryNewsFlow(
+                category = category
             ).collectAsLazyPagingItems()
 
             PullToRefreshBox(
